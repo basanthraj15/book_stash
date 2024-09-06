@@ -142,4 +142,12 @@ class _BookScreenState extends State<BookScreen> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    titlecontroller.dispose();
+    pricecontroller.dispose();
+    authorcontroller.dispose();
+  }
 }
