@@ -1,4 +1,6 @@
+import 'package:book_stash/Services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
 
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
@@ -101,9 +103,23 @@ class _BookScreenState extends State<BookScreen> {
               ),
               SizedBox(height: 30),
               Center(
-                  child: OutlinedButton(onPressed: () {
-                    _print();
-                  }, child: Text("Add")))
+                  child: OutlinedButton(
+                      onPressed: () async {
+                        String Id = randomAlphaNumeric(10);
+                        Map<String, dynamic> bookInfoMap = {
+                          "Title": titlecontroller.text,
+                          "Price": pricecontroller.text,
+                          "Author": authorcontroller.text
+                        };
+                        await DatabaseHelper()
+                            .addBookDetails(bookInfoMap, Id)
+                            .then((value) {
+                          print("Success!!!!");
+                          _showSnackBar(context);
+                        });
+                        _print();
+                      },
+                      child: Text("Add")))
             ],
           ),
         ),
@@ -115,5 +131,15 @@ class _BookScreenState extends State<BookScreen> {
     print("Title: ${titlecontroller.text}");
     print("Price: ${pricecontroller.text}");
     print("Author: ${authorcontroller.text}");
+  }
+
+  void _showSnackBar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Book Added Successfully"),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }
