@@ -1,6 +1,8 @@
 import 'package:book_stash/Services/database.dart';
+import 'package:book_stash/utils/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
+
 
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
@@ -31,96 +33,100 @@ class _BookScreenState extends State<BookScreen> {
         margin: EdgeInsets.all(8),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 10),
-              Text(
-                "Title:",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.only(left: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(15),
+          child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10),
+                Text(
+                  "Title:",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
-                child: TextField(
-                  controller: titlecontroller,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      /*      focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.black,
-                        width: 1.0,
-                      ),
-                    ), */
-                      hintText: 'Enter Book title',
-                      hintStyle: TextStyle(color: Colors.blueGrey)),
+                SizedBox(height: 5),
+                Container(
+                  padding: EdgeInsets.only(left: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: TextField(
+                    controller: titlecontroller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        /*      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 1.0,
+                        ),
+                      ), */
+                        hintText: 'Enter Book title',
+                        hintStyle: TextStyle(color: Colors.blueGrey)),
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Price:",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.only(left: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(15),
+                SizedBox(height: 10),
+                Text(
+                  "Price:",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
-                child: TextField(
-                  controller: pricecontroller,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter Price of the book',
-                      hintStyle: TextStyle(color: Colors.blueGrey)),
+                SizedBox(height: 5),
+                Container(
+                  padding: EdgeInsets.only(left: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: TextField(
+                    controller: pricecontroller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Enter Price of the book',
+                        hintStyle: TextStyle(color: Colors.blueGrey)),
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                "Author:",
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.only(left: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(15),
+                SizedBox(height: 10),
+                Text(
+                  "Author:",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
-                child: TextField(
-                  controller: authorcontroller,
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Enter name of the Author',
-                      hintStyle: TextStyle(color: Colors.blueGrey)),
+                SizedBox(height: 5),
+                Container(
+                  padding: EdgeInsets.only(left: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: TextField(
+                    controller: authorcontroller,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Enter name of the Author',
+                        hintStyle: TextStyle(color: Colors.blueGrey)),
+                  ),
                 ),
-              ),
-              SizedBox(height: 30),
-              Center(
-                  child: OutlinedButton(
-                      onPressed: () async {
-                        String Id = randomAlphaNumeric(10);
-                        Map<String, dynamic> bookInfoMap = {
-                          "Title": titlecontroller.text,
-                          "Price": pricecontroller.text,
-                          "Author": authorcontroller.text
-                        };
-                        await DatabaseHelper()
-                            .addBookDetails(bookInfoMap, Id)
-                            .then((value) {
-                          print("Success!!!!");
-                          _showSnackBar(context);
-                        });
-                        _print();
-                      },
-                      child: Text("Add")))
-            ],
+                SizedBox(height: 30),
+                Center(
+                    child: OutlinedButton(
+                        onPressed: () async {
+                          String Id = randomAlphaNumeric(10);
+                          Map<String, dynamic> bookInfoMap = {
+                            "Title": titlecontroller.text,
+                            "Price": pricecontroller.text,
+                            "Author": authorcontroller.text
+                          };
+                          await DatabaseHelper()
+                              .addBookDetails(bookInfoMap, Id)
+                              .then((value) {
+                            ShowToast.toast(message: "Message has been added!");
+                            // print("Success!!!!");
+                            _showSnackBar(context);
+                          });
+                          _print();
+                        },
+                        child: Text("Add")))
+              ],
+            ),
           ),
         ),
       ),

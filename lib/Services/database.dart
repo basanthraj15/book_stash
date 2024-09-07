@@ -7,4 +7,9 @@ class DatabaseHelper {
         .doc(id)
         .set(bookInfoMap);
   }
+
+  //get info
+  Future<Stream<QuerySnapshot>> getAllBookInfo() async {
+    return await FirebaseFirestore.instance.collection("Books").snapshots();
+  }
 }
