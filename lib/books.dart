@@ -3,7 +3,6 @@ import 'package:book_stash/utils/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:random_string/random_string.dart';
 
-
 class BookScreen extends StatefulWidget {
   const BookScreen({super.key});
 
@@ -121,6 +120,7 @@ class _BookScreenState extends State<BookScreen> {
                             ShowToast.toast(message: "Message has been added!");
                             // print("Success!!!!");
                             _showSnackBar(context);
+                            Navigator.of(context).pop();
                           });
                           _print();
                         },
