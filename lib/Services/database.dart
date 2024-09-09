@@ -12,4 +12,12 @@ class DatabaseHelper {
   Future<Stream<QuerySnapshot>> getAllBookInfo() async {
     return await FirebaseFirestore.instance.collection("Books").snapshots();
   }
+
+  //update book
+  Future updateBook(String id, Map<String, dynamic> updateDetails) async {
+    return await FirebaseFirestore.instance
+        .collection("Books")
+        .doc(id)
+        .update(updateDetails);
+  }
 }

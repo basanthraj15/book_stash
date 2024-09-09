@@ -1,7 +1,9 @@
 import 'package:book_stash/Services/database.dart';
 import 'package:book_stash/books.dart';
+import 'package:book_stash/utils/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:random_string/random_string.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController titlecontroller = TextEditingController();
+  TextEditingController pricecontroller = TextEditingController();
+  TextEditingController authorcontroller = TextEditingController();
   Stream? bookStream;
 
   dynamic getInfoInit() async {
@@ -59,11 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                       SizedBox(
                                         width: 5,
                                       ),
-                                      Text(
-                                        "BOOK DETAILS",
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(255, 6, 29, 70),
-                                            fontWeight: FontWeight.bold),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "BOOK DETAILS",
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 6, 29, 70),
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                titlecontroller.text =
+                                                    documentSnapshot["Title"];
+                                                pricecontroller.text =
+                                                    documentSnapshot["Price"];
+                                                authorcontroller.text =
+                                                    documentSnapshot["Author"];
+                                                editBook(
+                                                    documentSnapshot["Id"]);
+                                              },
+                                              icon: Icon(
+                                                Icons.edit,
+                                                size: 25,
+                                              ))
+                                        ],
                                       )
                                     ],
                                   ),
@@ -83,12 +110,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   241, 63, 51, 33)),
                                         ),
                                       ),
-                                      Text(
-                                        "  ${documentSnapshot["Title"]}",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      )
+                                      Text("  ${documentSnapshot["Title"]}",
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                          overflow: TextOverflow.ellipsis)
                                     ],
                                   ),
                                   Row(
@@ -116,14 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Text(
-                                          "Author:",
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold,
-                                              color: const Color.fromARGB(
-                                                  241, 63, 51, 33)),
-                                        ),
+                                        child: Text("Author:",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold,
+                                                color: const Color.fromARGB(
+                                                    241, 63, 51, 33)),
+                                            overflow: TextOverflow.ellipsis),
                                       ),
                                       Text(
                                         " ${documentSnapshot["Author"]}",
@@ -170,7 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amber,
+        backgroundColor: const Color.fromARGB(255, 6, 29, 70),
+        foregroundColor: Colors.white,
         onPressed: () {
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => BookScreen()));
@@ -179,10 +205,146 @@ class _HomeScreenState extends State<HomeScreen> {
           message: "Add",
           child: Icon(
             Icons.add,
-            color: Colors.black,
           ),
         ),
       ),
     );
+  }
+
+  Future editBook(String id) {
+    return showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Center(
+                          child: Text(
+                            "Edit a Book",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        )
+                      ],
+                    ),
+                    Divider(height: 2),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            "Title:",
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            padding: EdgeInsets.only(left: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: titlecontroller,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  /*      focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                                            ), */
+                                  hintText: 'Enter Book title',
+                                  hintStyle: TextStyle(color: Colors.blueGrey)),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Price:",
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            padding: EdgeInsets.only(left: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: pricecontroller,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter Price of the book',
+                                  hintStyle: TextStyle(color: Colors.blueGrey)),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "Author:",
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 5),
+                          Container(
+                            padding: EdgeInsets.only(left: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: TextField(
+                              controller: authorcontroller,
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Enter name of the Author',
+                                  hintStyle: TextStyle(color: Colors.blueGrey)),
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              OutlinedButton(
+                                  onPressed: () async {
+                                    Map<String, dynamic> updateDetails = {
+                                      "Title": titlecontroller.text,
+                                      "Price": pricecontroller.text,
+                                      "Author": authorcontroller.text,
+                                      "Id": id,
+                                    };
+                                    await DatabaseHelper()
+                                        .updateBook(id, updateDetails)
+                                        .then((value) {
+                                      ShowToast.toast(message: "Book updated");
+                                      // print("Success!!!!");
+                                      _print();
+                                      Navigator.of(context).pop();
+                                    });
+                                  },
+                                  child: Text("Update")),
+                              OutlinedButton(
+                                  onPressed: () async {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("Cancel")),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
+  }
+
+  _print() {
+    print("Title: ${titlecontroller.text}");
+    print("Price: ${pricecontroller.text}");
+    print("Author: ${authorcontroller.text}");
   }
 }

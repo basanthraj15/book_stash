@@ -108,14 +108,15 @@ class _BookScreenState extends State<BookScreen> {
                 Center(
                     child: OutlinedButton(
                         onPressed: () async {
-                          String Id = randomAlphaNumeric(10);
+                          String id = randomAlphaNumeric(10);
                           Map<String, dynamic> bookInfoMap = {
                             "Title": titlecontroller.text,
                             "Price": pricecontroller.text,
-                            "Author": authorcontroller.text
+                            "Author": authorcontroller.text,
+                            "Id": id,
                           };
                           await DatabaseHelper()
-                              .addBookDetails(bookInfoMap, Id)
+                              .addBookDetails(bookInfoMap, id)
                               .then((value) {
                             ShowToast.toast(message: "Message has been added!");
                             // print("Success!!!!");
