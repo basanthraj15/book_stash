@@ -89,7 +89,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                               icon: Icon(
                                                 Icons.edit,
                                                 size: 25,
-                                              ))
+                                              )),
+                                          SizedBox(width: 5),
+                                          Tooltip(
+                                            message: "Delete Book",
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  ShowDeleteConfirmation(
+                                                      context,
+                                                      documentSnapshot["Id"]);
+                                                },
+                                                icon: Icon(
+                                                    Icons
+                                                        .delete_outline_outlined,
+                                                    size: 25,
+                                                    color: Colors.red)),
+                                          )
                                         ],
                                       )
                                     ],
@@ -340,6 +355,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ));
+  }
+
+  void ShowDeleteConfirmation(BuildContext context, String id) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(
+              "Delete the Book",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            content: Text("Are you sure you want to delete the book?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("No")),
+              TextButton(
+                  onPressed: () async {
+                    await DatabaseHelper().deleteBook(id);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.red),
+                  )),
+            ],
+          );
+        });
   }
 
   _print() {

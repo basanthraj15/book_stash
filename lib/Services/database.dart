@@ -20,4 +20,11 @@ class DatabaseHelper {
         .doc(id)
         .update(updateDetails);
   }
+
+  Future deleteBook(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("Books")
+        .doc(id)
+        .delete();
+  }
 }
