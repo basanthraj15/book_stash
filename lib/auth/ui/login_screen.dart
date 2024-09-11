@@ -1,3 +1,5 @@
+import 'package:book_stash/Services/auth_services.dart';
+import 'package:book_stash/utils/toast.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -10,8 +12,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
-    bool _isObscuredPass = true;
-
+  bool _isObscuredPass = true;
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       SizedBox(height: 10),
                       TextFormField(
                         controller: passwordcontroller,
+                        obscureText: _isObscuredPass,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text("Password"),
                           hintText: "Enter your Password",
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isObscuredPass
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isObscuredPass = !_isObscuredPass;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(height: 30),
@@ -65,8 +79,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               minimumSize: Size(ScreenWidth * 0.7, 40),
                               backgroundColor:
                                   const Color.fromARGB(255, 8, 23, 49)),
-                          onPressed: () {
-                           Navigator.pushNamed(context, "/home");
+                          onPressed: () async {
+                            await AuthServicesHelper.loginWithEmail(
+                                    emailcontroller.text,
+                                    passwordcontroller.text)
+                                .then((value) {
+                              if (value == "Login Successful!") {
+                                ShowToast.toast(message: "Login Successful");
+                                Navigator.pushReplacementNamed(
+                                    context, "/home");
+                              } else {
+                                ShowToast.toast(message: "Error:$value");
+                              }
+                            });
                           },
                           child: Text(
                             "Login",
@@ -81,7 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           Text("Dont have an account yet?"),
                           TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, "/signup");
+                                Navigator.pushReplacementNamed(
+                                    context, "/signup");
                               },
                               child: Text(
                                 "Register",
@@ -100,5 +126,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
   }
 }
