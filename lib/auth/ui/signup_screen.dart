@@ -1,17 +1,17 @@
 import 'dart:math';
 
 import 'package:book_stash/Home.dart';
-import 'package:book_stash/auth/ui/signup_screen.dart';
+import 'package:book_stash/auth/ui/login_screen.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
 
@@ -36,12 +36,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       Image.asset("assets/images/book.jpg"),
                       SizedBox(height: 20),
                       Text(
-                        "Hi Welcome Back!",
+                        "Hi Welcome Aboard!",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 10,
+                      ),
+                      Text(
+                        "Register your account to use the app",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                       TextFormField(
                         controller: emailcontroller,
@@ -68,10 +76,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               backgroundColor:
                                   const Color.fromARGB(255, 8, 23, 49)),
                           onPressed: () {
-                           Navigator.pushNamed(context, "/home");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
                           },
                           child: Text(
-                            "Login",
+                            "Signup",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -80,13 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Dont have an account yet?"),
+                          Text("Already have an account?"),
                           TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, "/signup");
+                                Navigator.pushNamed(context, "/");
                               },
                               child: Text(
-                                "Register",
+                                "Login Now",
                                 style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontWeight: FontWeight.bold),

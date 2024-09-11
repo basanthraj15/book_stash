@@ -1,4 +1,6 @@
+import 'package:book_stash/Home.dart';
 import 'package:book_stash/auth/ui/login_screen.dart';
+import 'package:book_stash/auth/ui/signup_screen.dart';
 import 'package:book_stash/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +25,11 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: LoginScreen(),
+      routes: {
+        "/": (context) => LoginScreen(),
+        "/home": (context) => HomeScreen(),
+        "/signup":(context)=>SignupScreen(),
+      },
     );
   }
 }
