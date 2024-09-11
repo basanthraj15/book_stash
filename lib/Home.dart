@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:book_stash/Services/auth_services.dart';
 import 'package:book_stash/Services/database.dart';
 import 'package:book_stash/books.dart';
 import 'package:book_stash/utils/toast.dart';
@@ -219,6 +220,16 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showLogoutPopup(context);
+                },
+                icon: Icon(
+                  Icons.logout_outlined,
+                  color: Colors.red,
+                ))
+          ],
         ),
         body: Container(
           margin: EdgeInsets.all(8),
@@ -412,4 +423,33 @@ class _HomeScreenState extends State<HomeScreen> {
     print("Price: ${pricecontroller.text}");
     print("Author: ${authorcontroller.text}");
   }
+}
+
+void showLogoutPopup(context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("No")),
+            TextButton(
+                onPressed: () async {
+                  await AuthServicesHelper.logout();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/login", (route) => false);
+                  ShowToast.toast(message: "Logged out successfully!");
+                },
+                child: Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.red),
+                )),
+          ],
+        );
+      });
 }
