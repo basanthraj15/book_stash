@@ -1,7 +1,5 @@
-import 'dart:math';
-
-import 'package:book_stash/Home.dart';
-import 'package:book_stash/auth/ui/login_screen.dart';
+import 'package:book_stash/Services/auth_services.dart';
+import 'package:book_stash/utils/toast.dart';
 import 'package:flutter/material.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -14,6 +12,7 @@ class SignupScreen extends StatefulWidget {
 class _SignupScreenState extends State<SignupScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+  bool _isObscuredPass = true;
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +61,23 @@ class _SignupScreenState extends State<SignupScreen> {
                       SizedBox(height: 10),
                       TextFormField(
                         controller: passwordcontroller,
+                        obscureText: _isObscuredPass,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           label: Text("Password"),
                           hintText: "Enter your Password",
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isObscuredPass
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isObscuredPass = !_isObscuredPass;
+                              });
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(height: 30),
@@ -75,11 +87,20 @@ class _SignupScreenState extends State<SignupScreen> {
                               minimumSize: Size(ScreenWidth * 0.7, 40),
                               backgroundColor:
                                   const Color.fromARGB(255, 8, 23, 49)),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
+                          onPressed: () async {
+                            await AuthServicesHelper.createAccountWithEmail(
+                                    emailcontroller.text,
+                                    passwordcontroller.text)
+                                .then((value) {
+                              if (value == "Account created!") {
+                                ShowToast.toast(
+                                    message: "Account Created Successfully!");
+                                Navigator.pushNamedAndRemoveUntil(
+                                    context, "/home", (route) => false);
+                              } else {
+                                ShowToast.toast(message: "Error:$value");
+                              }
+                            });
                           },
                           child: Text(
                             "Signup",
@@ -113,5 +134,12 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
   }
 }

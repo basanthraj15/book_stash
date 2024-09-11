@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:book_stash/Services/database.dart';
 import 'package:book_stash/books.dart';
 import 'package:book_stash/utils/toast.dart';
@@ -16,6 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController pricecontroller = TextEditingController();
   TextEditingController authorcontroller = TextEditingController();
   Stream? bookStream;
+  DateTime? _lastBackPressTime;
+  final Duration _exitWarningDuration = Duration(seconds: 2);
 
   dynamic getInfoInit() async {
     bookStream = await DatabaseHelper().getAllBookInfo();
@@ -190,35 +194,52 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        final now = DateTime.now();
+        final isExitWarning = _lastBackPressTime == null ||
+            now.difference(_lastBackPressTime!) > _exitWarningDuration;
+        if (isExitWarning) {
+          _lastBackPressTime = now;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Tap again to exit"),
+            backgroundColor: Colors.blueGrey,
+          ));
+          return Future.value(false);
+        } else {
+          exit(0);
+        }
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: Text(
-          "BOOK STASH",
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: Text(
+            "BOOK STASH",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        margin: EdgeInsets.all(8),
-        child: Column(
-          children: [
-            Expanded(child: allBooksInfo()),
-          ],
+        body: Container(
+          margin: EdgeInsets.all(8),
+          child: Column(
+            children: [
+              Expanded(child: allBooksInfo()),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 6, 29, 70),
-        foregroundColor: Colors.white,
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => BookScreen()));
-        },
-        child: Tooltip(
-          message: "Add",
-          child: Icon(
-            Icons.add,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: const Color.fromARGB(255, 6, 29, 70),
+          foregroundColor: Colors.white,
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => BookScreen()));
+          },
+          child: Tooltip(
+            message: "Add",
+            child: Icon(
+              Icons.add,
+            ),
           ),
         ),
       ),

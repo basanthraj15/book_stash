@@ -1,7 +1,3 @@
-import 'dart:math';
-
-import 'package:book_stash/Home.dart';
-import 'package:book_stash/auth/ui/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -14,6 +10,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+    bool _isObscuredPass = true;
+
 
   @override
   Widget build(BuildContext context) {
