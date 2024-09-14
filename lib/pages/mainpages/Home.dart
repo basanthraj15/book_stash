@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:book_stash/Services/auth_services.dart';
 import 'package:book_stash/Services/database.dart';
 import 'package:book_stash/pages/mainpages/books.dart';
+import 'package:book_stash/pages/message_screen.dart';
 import 'package:book_stash/utils/toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -221,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           centerTitle: true,
           actions: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
             IconButton(
                 onPressed: () {
                   showLogoutPopup(context);

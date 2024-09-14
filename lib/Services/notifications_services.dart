@@ -1,3 +1,4 @@
+import 'package:book_stash/main.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -61,7 +62,26 @@ class PushNotificationHelper {
 
   //on Tap Local notification
 
-  static void onNotificationTap(NotificationResponse notificationResponse){
-    
+  static void onNotificationTap(NotificationResponse notificationResponse) {
+    navigatorKey.currentState!
+        .pushNamed("/message", arguments: NotificationResponse);
+  }
+
+  //show loacl noti
+  static Future showLocalNotification({
+    required String title,
+    required String body,
+    required String payload,
+  }) async {
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('channel id', 'channel name',
+            channelDescription: 'channel description',
+            importance: Importance.high,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await _flutterLocalNotificationsPlugin
+        .show(0, title, body, notificationDetails, payload: payload);
   }
 }
