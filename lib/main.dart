@@ -1,12 +1,14 @@
-import 'package:book_stash/Home.dart';
+import 'package:book_stash/pages/mainpages/Home.dart';
 import 'package:book_stash/Services/auth_services.dart';
 import 'package:book_stash/Services/notifications_services.dart';
 import 'package:book_stash/auth/ui/login_screen.dart';
 import 'package:book_stash/auth/ui/signup_screen.dart';
-import 'package:book_stash/firebase_options.dart';
+import 'package:book_stash/firebase/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
+      navigatorKey: navigatorKey,
       routes: {
         "/": (context) => checkUserBookStash(),
         "/login": (context) => LoginScreen(),
